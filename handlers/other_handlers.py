@@ -38,17 +38,17 @@ async def all_message(message: Message) -> None:
 
     # команды доступные администраторам
     # list_super_admin = list(map(int, config.tg_bot.admin_ids.split(',')))
-    if message.chat.id in list_super_admin:
-        logging.info(f'all_message message.admin')
-        if message.text == '/get_logfile':
-            logging.info(f'all_message message.admin./get_logfile')
-            file_path = "py_log.log"
-            await message.answer_document(FSInputFile(file_path))
+    # if message.chat.id in list_super_admin:
+    logging.info(f'all_message message.admin')
+    if message.text == '/get_logfile':
+        logging.info(f'all_message message.admin./get_logfile')
+        file_path = "py_log.log"
+        await message.answer_document(FSInputFile(file_path))
 
-        elif message.text == '/get_dbfile':
-            logging.info(f'all_message message.admin./get_dbfile')
-            file_path = "database/db.sqlite3"
-            await message.answer_document(FSInputFile(file_path))
+    elif message.text == '/get_dbfile':
+        logging.info(f'all_message message.admin./get_dbfile')
+        file_path = "database/db.sqlite3"
+        await message.answer_document(FSInputFile(file_path))
 
         # elif message.text == '/get_listusers':
         #     logging.info(f'all_message message.admin./get_listusers')
@@ -63,5 +63,5 @@ async def all_message(message: Message) -> None:
         #     await message.answer(text=text)
 
 
-        else:
-            await message.answer('Я вас не понимаю!')
+    else:
+        await message.answer('Я вас не понимаю!')
