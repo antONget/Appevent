@@ -36,7 +36,7 @@ def keyboard_question() -> InlineKeyboardMarkup:
 def keyboard_feedback() -> InlineKeyboardMarkup:
     logging.info("keyboard_feedback")
     button_1 = InlineKeyboardButton(text='Посмотреть отзывы', callback_data=f'show_feedback')
-    button_2 = InlineKeyboardButton(text='Оставить отзывы', callback_data=f'leave_feedback')
+    button_2 = InlineKeyboardButton(text='Оставить отзыв', callback_data=f'leave_feedback')
     keyboard = InlineKeyboardMarkup(inline_keyboard=[[button_1], [button_2]],)
     return keyboard
 

@@ -8,7 +8,7 @@ from handlers import handler_user, other_handlers, handler_admin
 from middleware.outer import FirstOuterMiddleware
 from config_data.config import Config, load_config
 from database.models import async_main
-from utils.sheduler_task import scheduler_feedback
+from utils.sheduler_task import scheduler_feedback, scheduler_remember
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import asyncio
 import logging
@@ -41,6 +41,7 @@ async def main():
     dp = Dispatcher()
     scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
     scheduler.add_job(scheduler_feedback, 'cron', minute="*/5", args=(bot,))
+    scheduler.add_job(scheduler_remember, 'cron', minute="*/5", args=(bot,))
     scheduler.start()
     # Регистрируем router в диспетчере
     dp.include_router(handler_user.router)
