@@ -16,6 +16,7 @@ login = config.tg_bot.login
 
 bot = Client(name=login, api_id=api_id, api_hash=api_hash, phone_number=phone)
 
+
 @bot.on_message(filters.bot)
 async def my_handler(client: Client, message: Message):
     await async_main()
@@ -62,8 +63,6 @@ async def my_handler(client: Client, message: Message):
                 "email_client": email_client,
                 "datetime_order": datetime_order}
         await add_order(data=data)
-
-
 
 # Запуск клиента
 bot.run()
