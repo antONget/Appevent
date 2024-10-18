@@ -3,7 +3,7 @@ import asyncio
 from aiogram import Router
 from aiogram.types import Message, CallbackQuery
 from aiogram.types import FSInputFile
-# from database.requests import get_all_users
+from database import requests as rq
 from config_data.config import Config, load_config
 
 import logging
@@ -62,6 +62,9 @@ async def all_message(message: Message) -> None:
         #             text = ''
         #     await message.answer(text=text)
 
-
+    elif message.text == '/get_countorder':
+        orders = await rq.get_orders()
+        count_order = len([order for order in orders])
+        await message.answer(text=f'Количество заявок - {count_order}')
     else:
         await message.answer('Я вас не понимаю!')
