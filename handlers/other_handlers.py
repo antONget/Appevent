@@ -37,7 +37,7 @@ async def all_message(message: Message) -> None:
         return
 
     # команды доступные администраторам
-    list_super_admin = list(map(int, config.tg_bot.admin_ids.split(',')))
+    # list_super_admin = list(map(int, config.tg_bot.admin_ids.split(',')))
     if message.chat.id in list_super_admin:
         logging.info(f'all_message message.admin')
         if message.text == '/get_logfile':
