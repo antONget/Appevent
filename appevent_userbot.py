@@ -1,3 +1,5 @@
+import logging
+
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from config_data.config import Config, load_config
@@ -20,6 +22,7 @@ bot = Client(name=login, api_id=api_id, api_hash=api_hash, phone_number=phone)
 @bot.on_message(filters.bot)
 async def my_handler(client: Client, message: Message):
     await async_main()
+    logging.info(message.chat.id)
     if message.chat.id == 7513602824:
         content = message.text.split('\n')
         if not content[0] == 'Новая заявка с виджета!':

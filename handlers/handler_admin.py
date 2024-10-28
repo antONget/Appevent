@@ -26,11 +26,10 @@ class Admin(StatesGroup):
 
 
 @router.message(F.text == 'Код доступа')
-async def process_cod_password(message: Message, state: FSMContext):
+async def process_cod_password(message: Message):
     """
     Выбор КОД ДОСТУПА
     :param message:
-    :param state:
     :return:
     """
     logging.info(f"process_cod_password {message.chat.id}")
@@ -50,7 +49,7 @@ async def get_password(callback: CallbackQuery):
     list_objects = [object_ for object_ in objects]
     text = '<b>Коды доступа для объектов:</b>\n\n'
     for obj in list_objects:
-        text += f'<{obj.id}>{i + 1}. {obj.title_object}</i>: {obj.password_object}\n'
+        text += f'<i>{obj.id}. {obj.title_object}</i>: {obj.password_object}\n'
     await callback.message.answer(text=text)
     await callback.answer()
 
@@ -60,6 +59,7 @@ async def update_password(callback: CallbackQuery, state: FSMContext):
     """
     Обновление кода доступа
     :param callback:
+    :param state:
     :return:
     """
     logging.info(f"get_password {callback.message.chat.id}")

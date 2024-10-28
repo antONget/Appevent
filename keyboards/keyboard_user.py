@@ -5,31 +5,57 @@ import logging
 
 
 def keyboard_start_user() -> ReplyKeyboardMarkup:
+    """
+    [Получить код доступа]
+    [Инструкция]
+    [Отзывы]
+    [Поддержка]
+    :return:
+    """
     logging.info("keyboard_start")
     button_1 = KeyboardButton(text='Получить код доступа')
-    button_2 = KeyboardButton(text='Поддержка')
+    button_2 = KeyboardButton(text='Инструкция')
     button_3 = KeyboardButton(text='Отзывы')
-    keyboard = ReplyKeyboardMarkup(keyboard=[[button_1], [button_2], [button_3]])
-    return keyboard
-
-
-def keyboard_start_admin() -> ReplyKeyboardMarkup:
-    logging.info("keyboard_start")
-    button_1 = KeyboardButton(text='Получить код доступа')
-    button_2 = KeyboardButton(text='Поддержка')
-    button_3 = KeyboardButton(text='Отзывы')
-    button_4 = KeyboardButton(text='Код доступа')
+    button_4 = KeyboardButton(text='Поддержка')
     keyboard = ReplyKeyboardMarkup(keyboard=[[button_1], [button_2], [button_3], [button_4]])
     return keyboard
 
 
+def keyboard_start_admin() -> ReplyKeyboardMarkup:
+    """
+    [Получить код доступа]
+    [Инструкция]
+    [Отзывы]
+    [Поддержка]
+    [Код доступа]
+    :return:
+    """
+    logging.info("keyboard_start_admin")
+    button_1 = KeyboardButton(text='Получить код доступа')
+    button_2 = KeyboardButton(text='Инструкция')
+    button_3 = KeyboardButton(text='Отзывы')
+    button_4 = KeyboardButton(text='Поддержка')
+    button_5 = KeyboardButton(text='Код доступа')
+    keyboard = ReplyKeyboardMarkup(keyboard=[[button_1], [button_2], [button_3], [button_4], [button_5]])
+    return keyboard
+
+
 def keyboard_question() -> InlineKeyboardMarkup:
+    """
+    [Как добраться?]
+    [Как открыть студию?]
+    [Правила нахождения в студии]
+    [Как настроить свет, звук и вентиляцию]
+    [Памятка для твоих клиентов]
+    :return:
+    """
     logging.info("keyboard_send")
-    button_1 = InlineKeyboardButton(text='Как добраться', callback_data=f'question_1')
-    button_2 = InlineKeyboardButton(text='Как открыть студию', callback_data=f'question_2')
+    button_1 = InlineKeyboardButton(text='Как добраться?', callback_data=f'question_1')
+    button_2 = InlineKeyboardButton(text='Как открыть студию?', callback_data=f'question_2')
     button_3 = InlineKeyboardButton(text='Правила нахождения в студии', callback_data=f'question_3')
     button_4 = InlineKeyboardButton(text='Как настроить свет, звук и вентиляцию', callback_data=f'question_4')
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[[button_1], [button_2], [button_3], [button_4]],)
+    button_5 = InlineKeyboardButton(text='Памятка для твоих клиентов', callback_data=f'question_5')
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[[button_1], [button_2], [button_3], [button_4], [button_5]],)
     return keyboard
 
 

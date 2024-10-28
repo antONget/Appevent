@@ -40,13 +40,14 @@ async def process_start_command(message: Message, state: FSMContext) -> None:
                       data={"tg_id": message.chat.id, "username": username})
     admins = config.tg_bot.admin_ids.split(',')
     if str(message.chat.id) in admins:
-        await message.answer(text=f'Что может этот бот\n\n'
-                                  f'Вы администратор проекта.\n'
-                                  f'Вы можете изменить коды доступа для объетов',
+        await message.answer(text=f'Вы администратор проекта.\n'
+                                  f'Вы можете изменить коды доступа для объектов',
                              reply_markup=kb.keyboard_start_admin())
     else:
-        await message.answer(text=f'Что может этот бот\n\n'
-                                  f'',
+        await message.answer(text=f'Привет, это Твой START!💫\n\n'
+                                  f'Рады видеть тебя в нашем боте! Здесь найдутся ответы на все твои вопросы!\n\n'
+                                  f'Для того, чтобы получить код доступа и инструкции, пришли номер своего заказа'
+                                  f' (он пришел к тебе на почту вместе со счетом)👀',
                              reply_markup=kb.keyboard_start_user())
 
 
@@ -59,8 +60,24 @@ async def process_support(message: Message, state: FSMContext):
     :return:
     """
     logging.info(f"process_support {message.chat.id}")
-    await message.answer(text='Ответы на часто возникающие вопросы вы можете получить в'
-                              ' соответствующих разделах или задать их в поддержку',
+    await state.set_state(state=None)
+    await message.answer(text='Если у тебя остались вопросы или предложения, то напиши нам!\n'
+                              '@tvoiystart_admin')
+
+
+@router.message(F.text == 'Инструкция')
+async def process_manual(message: Message, state: FSMContext):
+    """
+    Выбор ПОДДЕРЖКА
+    :param message:
+    :param state:
+    :return:
+    """
+    logging.info(f"process_support {message.chat.id}")
+    await state.set_state(state=None)
+    await message.answer(text='Система Твой START работает очень просто!\n\n'
+                              'Но чтобы точно никто не запутался, мы сделали инструкции о том, как все работает.\n'
+                              'Скорее смотри👀',
                          reply_markup=kb.keyboard_question())
 
 
@@ -80,9 +97,10 @@ async def get_answer(callback: CallbackQuery):
         await callback.message.answer(text='Все инструкции сопровождаются текстом и фото/видео 3')
     elif answer == '4':
         await callback.message.answer(text='Все инструкции сопровождаются текстом и фото/видео 4')
+    elif answer == '5':
+        await callback.message.answer(text='Все инструкции сопровождаются текстом и фото/видео 5')
     await asyncio.sleep(2)
-    await callback.message.answer(text=f'Если у вас остались вопросы или предложения, то напишите менеджеру'
-                                       f' {config.tg_bot.support_username}')
+    await process_support(message=callback.message)
 
 
 @router.message(F.text == 'Получить код доступа')
@@ -94,14 +112,16 @@ async def process_get_password(message: Message, state: FSMContext):
     :return:
     """
     logging.info(f"process_get_password {message.chat.id}")
-    await message.answer(text='Пришлите номер бронирования')
+    await state.set_state(state=None)
+    await message.answer(text='Для получения кода доступа, пришли номер своего заказа (он пришел тебе на почту'
+                              ' вместе со счетом)👀')
     await state.set_state(User.number_order)
 
 
 @router.message(F.text, StateFilter(User.number_order))
 async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> None:
     """
-    Получаем от пользователя имя
+    Получаем от пользователя номер заказа
     :param message:
     :param state:
     :param bot:
@@ -119,21 +139,31 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
                                       f"Дата брони: {order.date_order} {order.month_order}\n"
                                       f"Время брони: {order.time_order}\n\n"
                                       f"Код доступа на объект: {object_order.password_object}")
-            await message.answer_video(video=object_order.video_object,
-                                       caption='Инструкция как добраться до объекта')
+            # await message.answer_video(video=object_order.video_object,
+            #                            caption='Инструкция как добраться до объекта')
             user_info = await rq.get_user(tg_id=message.chat.id)
             order_user = user_info.list_order.split(',')
             order_user.append(str(order.id))
             await rq.set_order_user(tg_id=message.chat.id, orders=','.join(order_user))
             await rq.set_order_tg_id(tg_id=message.chat.id, id_order=order.id)
         else:
-            await message.answer(text='Номер заказа в базе не найден, проверьте введенные данные и'
-                                      ' повторите ввод или обратитесь в поддержку')
+            await message.answer(text='Упс, что-то пошло не так 🧐\n\n'
+                                      'Проверь 2 вещи:\n'
+                                      '1. Заказ оплачен? Если да, то проверь правильность номера заказа'
+                                      ' и повтори ввод!\n\n'
+                                      '2. Заказ не оплачен? Чтобы получить код доступа необходимо оплатить заказ.'
+                                      ' Счет уже у тебя на почте😊\n\n'
+                                      'Если ничего не получается, напиши нам: @tvoiystart_admin')
             await send_admins(bot=bot, text=f'Объект {title_object} в БД отсутствует')
         await state.set_state(state=None)
     else:
-        await message.answer(text='Номер заказа в базе не найден, проверьте введенные данные и'
-                                  ' повторите ввод или обратитесь в поддержку')
+        await message.answer(text='Упс, что-то пошло не так 🧐\n\n'
+                                  'Проверь 2 вещи:\n'
+                                  '1. Заказ оплачен? Если да, то проверь правильность номера заказа'
+                                  ' и повтори ввод!\n\n'
+                                  '2. Заказ не оплачен? Чтобы получить код доступа необходимо оплатить заказ.'
+                                  ' Счет уже у тебя на почте😊\n\n'
+                                  'Если ничего не получается, напиши нам: @tvoiystart_admin')
         await state.set_state(state=None)
 
 
@@ -146,7 +176,10 @@ async def process_feedback(message: Message, state: FSMContext):
     :return:
     """
     logging.info(f"process_feedback {message.chat.id}")
-    await message.answer(text='Здесь вы можете посмотреть отзывы или оставить отзыв',
+    await state.set_state(state=None)
+    await message.answer(text='Ой, как круто!🤗\n\n'
+                              'Ты хочешь оставить отзыв?\n'
+                              'Или хочешь посмотреть как это сделали другие?',
                          reply_markup=kb.keyboard_feedback())
 
 
@@ -158,7 +191,9 @@ async def show_feedback(callback: CallbackQuery):
     :return:
     """
     logging.info(f"show_feedback {callback.message.chat.id}")
-    await callback.message.answer(text=f'Ссылка на ресурс с отзывами или вывод скриншотов с ними (на обсуждение)')
+    await callback.message.answer(text=f'Отзывы о Твой START:\n\n'
+                                       f'На картах:\n'
+                                       f'В Instagram:')
 
 
 @router.callback_query(F.data == 'leave_feedback')
@@ -169,7 +204,17 @@ async def leave_feedback(callback: CallbackQuery, state: FSMContext):
     :return:
     """
     logging.info(f"leave_feedback {callback.message.chat.id}")
-    await callback.message.answer(text=f'Пришлите ваш отзыв, нам очень важно ваше мнение')
+    await callback.message.answer(text=f'Мы очень любим слушать о себе, поэтому за отзыв мы даем скидки!😎\n\n'
+                                       f'Хочешь получить скидку 20% на следующее занятие?\n'
+                                       f'Отметь нас в Instagram или Вконтакте и напиши нам в директ/личные сообщения!\n'
+                                       f'Мы отправим тебе промокод!\n\n'
+                                       f'Наши социальные сети:\n'
+                                       f'Instagram: https://www.instagram.com/tvoiystart\n'
+                                       f'Вконтакте: https://vk.com/tvoiystart\n'
+                                       f'Telegram: https://t.me/tvoiystart\n'
+                                       f'Карты:\n\n'
+                                       f'А еще ты просто можешь написать здесь, все, что захочешь и мы обязательно'
+                                       f' тебе ответим!')
     await state.set_state(User.feed_back)
 
 
@@ -232,8 +277,7 @@ async def send_add_content(callback: CallbackQuery, state: FSMContext, bot: Bot)
         await state.update_data(count=[])
         await callback.message.edit_text(text='📎 Прикрепите фото (можно несколько), видео или документ.')
     else:
-        await callback.message.edit_text(text='Материалы от вас переданы\n\n'
-                                              'Спасибо! С вами свяжутся',
+        await callback.message.edit_text(text='Спасибо! Благодаря твоему отзыву мы становимся лучше с каждым днем!',
                                          reply_markup=None)
 
         data = await state.get_data()
