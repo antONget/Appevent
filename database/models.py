@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_
 from dataclasses import dataclass
 
 
-engine = create_async_engine(url="sqlite+aiosqlite:///database/db.sqlite3", echo=False)
+engine = create_async_engine(url="sqlite+aiosqlite:///database/db.sqlite3", echo=False, connect_args={"timeout": 30})
 async_session = async_sessionmaker(engine)
 
 
