@@ -129,7 +129,11 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
     """
     logging.info(f'get_number_order {message.chat.id}')
     number_order = message.text
-    order = await rq.get_order_number(number_order=number_order)
+    if not number_order.isdigit():
+        await message.answer(text='Номер заказа должно быть числом')
+        return
+
+    order = await rq.get_order_number(number_order=int(number_order))
     if order:
         title_object = order.title_object
         object_order = await rq.get_object_title(title=title_object)

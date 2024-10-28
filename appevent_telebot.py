@@ -1,7 +1,6 @@
 import logging
 
-from pyrogram import Client, filters
-from pyrogram.types import Message
+from telethon import TelegramClient, sync, events
 from config_data.config import Config, load_config
 
 from database.requests import add_order
@@ -10,26 +9,26 @@ from datetime import date
 import datetime
 config: Config = load_config()
 
-api_id = config.tg_bot.api_id
-api_hash = config.tg_bot.api_hash
+api_id = 27553479
+api_hash = 'b97a7c148d46268b14ee49e63dd6511b'
 phone = config.tg_bot.phone
 login = config.tg_bot.login
 
 
-bot = Client(name=login, api_id=api_id, api_hash=api_hash, phone_number=phone)
+bot = TelegramClient('session_name', api_id, api_hash)
 
 
-@bot.on_message(filters.bot)
-async def my_handler(client: Client, message: Message):
+@bot.on(events.NewMessage())
+async def my_handler(event):
     await async_main()
-    logging.info(message.chat.id)
-    if message.chat.id == 7513602824:
-        content = message.text.split('\n')
+    logging.info(event.message.chat.id)
+    if event.message.chat.id == 7513602824:
+        content = event.message.text.split('\n')
         if not content[0] == 'Новая заявка с виджета!':
             return
         for row in content:
             if "Заявка №" in row:
-                number_order = int(row.split('№')[-1])
+                number_order = row.split('№')[-1]
             elif "Начинается:" in row:
                 dict_month = {'января': '01', 'февраля': '02', 'марта': '03',
                               'апреля': '04', 'мая': '05', 'июня': '06',
@@ -45,7 +44,7 @@ async def my_handler(client: Client, message: Message):
                                                    month=int(dict_month[month_order]),
                                                    day=int(date_order),
                                                    hour=int(time_order.split(':')[0]),
-                                                   minute=0).strftime("%d/%m/%Y %H:%M:%S")
+                                                   minute=0)
             elif "Зал:" in row:
                 title_object = row.split()[1][:-1]
             elif "Имя:" in row:
@@ -68,4 +67,4 @@ async def my_handler(client: Client, message: Message):
         await add_order(data=data)
 
 # Запуск клиента
-bot.run()
+bot.start()

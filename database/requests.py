@@ -66,7 +66,7 @@ async def add_order(data: dict) -> None:
         await session.commit()
 
 
-async def get_order_number(number_order: str) -> Order:
+async def get_order_number(number_order: int) -> Order:
     """
     Возвращаем запись о заказе по его номеру
     :param number_order:

@@ -23,8 +23,8 @@ async def main():
     # Конфигурируем логирование
     logging.basicConfig(
         level=logging.INFO,
-        filename="py_log.log",
-        filemode='w',
+        # filename="py_log.log",
+        # filemode='w',
         format='%(filename)s:%(lineno)d #%(levelname)-8s '
                '[%(asctime)s] - %(name)s - %(message)s')
 
@@ -48,11 +48,12 @@ async def main():
     dp.include_router(handler_admin.router)
     dp.include_router(other_handlers.router)
     dp.message.middleware(FirstOuterMiddleware())
+
     @dp.error()
     async def error_handler(event: ErrorEvent):
         logger.critical("Критическая ошибка: %s", event.exception, exc_info=True)
-        await bot.send_message(chat_id=config.tg_bot.support_id,
-                               text=f'{event.exception}')
+        # await bot.send_message(chat_id=config.tg_bot.support_id,
+        #                        text=f'{event.exception}')
         formatted_lines = traceback.format_exc()
         text_file = open('error.txt', 'w')
         text_file.write(str(formatted_lines))
