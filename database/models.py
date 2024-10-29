@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer
+from sqlalchemy import String, Integer, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 from dataclasses import dataclass
@@ -20,7 +20,7 @@ class User(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    tg_id = mapped_column(Integer)
+    tg_id = mapped_column(BigInteger)
     username: Mapped[str] = mapped_column(String())
     list_order: Mapped[str] = mapped_column(String(),  default='0')
 
