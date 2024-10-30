@@ -29,7 +29,7 @@ class Order(Base):
     __tablename__ = 'orders'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    number_order = mapped_column(Integer)
+    number_order: Mapped[int] = mapped_column(Integer)
     date_order: Mapped[str] = mapped_column(String(200))
     month_order: Mapped[str] = mapped_column(String(200))
     time_order: Mapped[str] = mapped_column(String(20))
@@ -40,7 +40,7 @@ class Order(Base):
     email_client: Mapped[str] = mapped_column(String(200))
     datetime_order: Mapped[str] = mapped_column(String(200))
     feedback: Mapped[str] = mapped_column(String(20), default='create')
-    tg_id: Mapped[int] = mapped_column(Integer(), default=0)
+    tg_id = mapped_column(BigInteger(), default=0)
 
 
 class Object(Base):

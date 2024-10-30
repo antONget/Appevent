@@ -82,10 +82,11 @@ async def process_manual(message: Message, state: FSMContext):
 
 
 @router.callback_query(F.data.startswith('question'))
-async def get_answer(callback: CallbackQuery):
+async def get_answer(callback: CallbackQuery, state: FSMContext):
     """
     Получаем ответ на вопрос
     :param callback:
+    :param state:
     :return:
     """
     answer = callback.data.split('_')[1]
@@ -100,7 +101,7 @@ async def get_answer(callback: CallbackQuery):
     elif answer == '5':
         await callback.message.answer(text='Все инструкции сопровождаются текстом и фото/видео 5')
     await asyncio.sleep(2)
-    await process_support(message=callback.message)
+    await process_support(message=callback.message, state=state)
 
 
 @router.message(F.text == 'Получить код доступа')

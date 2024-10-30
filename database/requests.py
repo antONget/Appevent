@@ -74,7 +74,7 @@ async def get_order_number(number_order: int) -> Order:
     """
     logging.info(f'get_order_number')
     async with async_session() as session:
-        return await session.scalar(select(Order).where(Order.number_order == number_order))
+        return await session.query(Order).filter(Order.number_order == number_order)
 
 
 async def get_orders() -> Order:
