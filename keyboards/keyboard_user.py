@@ -50,11 +50,11 @@ def keyboard_question() -> InlineKeyboardMarkup:
     :return:
     """
     logging.info("keyboard_send")
-    button_1 = InlineKeyboardButton(text='Как добраться?', callback_data=f'question_1')
-    button_2 = InlineKeyboardButton(text='Как открыть студию?', callback_data=f'question_2')
-    button_3 = InlineKeyboardButton(text='Правила нахождения в студии', callback_data=f'question_3')
-    button_4 = InlineKeyboardButton(text='Как настроить свет, звук и вентиляцию', callback_data=f'question_4')
-    button_5 = InlineKeyboardButton(text='Памятка для твоих клиентов', callback_data=f'question_5')
+    button_1 = InlineKeyboardButton(text='Как пройти', callback_data=f'question_1')
+    button_2 = InlineKeyboardButton(text='Как открыть', callback_data=f'question_2')
+    button_3 = InlineKeyboardButton(text='Как настроить зал', callback_data=f'question_3')
+    button_4 = InlineKeyboardButton(text='Правила студии', callback_data=f'question_4')
+    button_5 = InlineKeyboardButton(text='ПАМЯТКА ДЛЯ ТВОИХ КЛИЕНТОВ', callback_data=f'question_5')
     keyboard = InlineKeyboardMarkup(inline_keyboard=[[button_1], [button_2], [button_3], [button_4], [button_5]],)
     return keyboard
 

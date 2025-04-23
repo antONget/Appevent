@@ -109,7 +109,7 @@ async def set_order_feedback(id_order: int) -> None:
     :param id_order:
     :return:
     """
-    logging.info(f'set_order_tg_id')
+    logging.info(f'set_order_feedback')
     async with async_session() as session:
         order = await session.scalar(select(Order).where(Order.id == id_order))
         if order:

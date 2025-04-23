@@ -67,5 +67,9 @@ async def my_handler(client: Client, message: Message):
                 "datetime_order": datetime_order}
         await add_order(data=data)
 
+
+@bot.on_message()
+async def my_handler(client: Client, message: Message):
+    print(message.text)
 # Запуск клиента
 bot.run()
