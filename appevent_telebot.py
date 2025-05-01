@@ -22,7 +22,7 @@ bot = TelegramClient('session_name', api_id, api_hash)
 async def my_handler(event):
     await async_main()
     logging.info(event.message.chat.id)
-    if event.message.chat.id == 7513602824:
+    if event.message.chat.id == 7513602824: # 191328935
         content = event.message.text.split('\n')
         if not content[0] == 'Новая заявка с виджета!':
             return

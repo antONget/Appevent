@@ -32,6 +32,11 @@ async def all_message(message: Message) -> None:
         print(message.video.file_id)
         return
 
+    if message.document:
+        logging.info(f'all_message message.photo')
+        print(message.document.file_id)
+        return
+
     if message.sticker:
         logging.info(f'all_message message.sticker')
         return
