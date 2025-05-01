@@ -25,10 +25,10 @@ async def my_handler(client: Client, message: Message):
     logging.info(message.chat.id)
     if message.chat.id == 7513602824:
         content = message.text.split('\n')
-        if not content[0] == 'Новая заявка с виджета!':
+        if not content[0] == 'Поступила оплата!':
             return
         for row in content:
-            if "Заявка №" in row:
+            if "Бронь №" in row:
                 number_order = int(row.split('№')[-1])
             elif "Начинается:" in row:
                 dict_month = {'января': '01', 'февраля': '02', 'марта': '03',
