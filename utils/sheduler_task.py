@@ -14,7 +14,7 @@ async def scheduler_feedback(bot: Bot):
     """
     logging.info(f'scheduler_feedback')
     orders = await rq.get_orders()
-    date_format = '%Y/%m/%d %H:%M:%S'
+    date_format = '%d/%m/%Y %H:%M:%S'
     current_date = datetime.now().strftime(date_format)
     for order in orders:
         if order.feedback == 'create':
@@ -38,7 +38,7 @@ async def scheduler_remember(bot: Bot):
     """
     logging.info(f'scheduler_feedback')
     orders = await rq.get_orders()
-    date_format = '%Y/%m/%d %H:%M:%S'
+    date_format = '%d/%m/%Y %H:%M:%S'
     current_date = datetime.now().strftime(date_format)
     for order in orders:
         if order.feedback == 'create':

@@ -38,7 +38,7 @@ async def process_cod_password(message: Message):
 
 
 @router.callback_query(F.data == 'get_password')
-async def get_password(callback: CallbackQuery):
+async def get_password(callback: CallbackQuery, state: FSMContext):
     """
     Получаем коды доступа для объектов
     :param callback:
@@ -50,7 +50,7 @@ async def get_password(callback: CallbackQuery):
     text = '<b>Коды доступа для объектов:</b>\n\n'
     for obj in list_objects:
         text += f'<i>{obj.id}. {obj.title_object}</i>: {obj.password_object}\n'
-    await callback.message.answer(text=text)
+    await callback.message.edit_text(text=text)
     await callback.answer()
 
 
@@ -68,32 +68,32 @@ async def update_password(callback: CallbackQuery, state: FSMContext):
     text = '<b>Коды доступа для объектов:</b>\n\n'
     for obj in list_objects:
         text += f'<i>{obj.id}. {obj.title_object}</i>: {obj.password_object}\n'
-    text += "\nВведите номер объекта для обновления кода доступа"
-    await callback.message.answer(text=text)
-    await state.set_state(Admin.number_object)
+    text += '\nПришлите новый код для доступа на объекты'
+    await callback.message.edit_text(text=text)
+    await state.set_state(Admin.password_object)
     await callback.answer()
-
-
-@router.message(F.text, StateFilter(Admin.number_object))
-async def get_number_object(message: Message, state: FSMContext):
-    """
-    Получение номер объекта
-    :param message:
-    :param state:
-    :return:
-    """
-    logging.info(f"get_number_object {message.chat.id}")
-    if not message.text.isdigit() or int(message.text) <= 0:
-        await message.answer(text='Номер объекта должен быть целым числом')
-        return
-    number_object = int(message.text)
-    object_ = await rq.get_object_id(number_object)
-    if object_:
-        await state.update_data(number_object=number_object)
-        await message.answer(text=f'Пришлите новый код для объекта {object_.title_object}')
-        await state.set_state(Admin.password_object)
-    else:
-        await message.answer(text=f'Объекта с таким номером нет в БД')
+#
+#
+# @router.message(F.text, StateFilter(Admin.number_object))
+# async def get_number_object(message: Message, state: FSMContext):
+#     """
+#     Получение номер объекта
+#     :param message:
+#     :param state:
+#     :return:
+#     """
+#     logging.info(f"get_number_object {message.chat.id}")
+#     if not message.text.isdigit() or int(message.text) <= 0:
+#         await message.answer(text='Номер объекта должен быть целым числом')
+#         return
+#     number_object = int(message.text)
+#     object_ = await rq.get_object_id(number_object)
+#     if object_:
+#         await state.update_data(number_object=number_object)
+#         await message.answer(text=f'Пришлите новый код для объекта {object_.title_object}')
+#         await state.set_state(Admin.password_object)
+#     else:
+#         await message.answer(text=f'Объекта с таким номером нет в БД')
 
 
 @router.message(F.text, StateFilter(Admin.password_object))
@@ -111,10 +111,7 @@ async def get_password_object(message: Message, state: FSMContext):
     if len(message.text) != 4:
         await message.answer(text='Код должен содержать 4 цифры')
         return
-    data = await state.get_data()
-    number_object = data['number_object']
-    object_ = await rq.get_object_id(number_object)
     password_object = message.text
-    await rq.set_object_id(id_=number_object, password=password_object)
-    await message.answer(text=f'Код для объекта {object_.title_object} обновлен на {message.text}')
+    await rq.set_object_all(password=password_object)
+    await message.answer(text=f'Код обновлен на {message.text}')
     await state.set_state(state=None)

@@ -180,3 +180,17 @@ async def set_object_id(id_: int, password: str) -> None:
         if object_:
             object_.password_object = password
             await session.commit()
+
+
+async def set_object_all(password: str) -> None:
+    """
+    Возвращаем запись об объекте по его id
+    :param password:
+    :return:
+    """
+    logging.info(f'get_object_title')
+    async with async_session() as session:
+        object_ = await session.scalar(select(Object))
+        if object_:
+            object_.password_object = password
+            await session.commit()
