@@ -108,10 +108,10 @@ async def get_password_object(message: Message, state: FSMContext):
     if not message.text.isdigit() or int(message.text) <= 0:
         await message.answer(text='Код должен содержать только числа')
         return
-    if len(message.text) != 4:
-        await message.answer(text='Код должен содержать 4 цифры')
+    if len(message.text) != 6:
+        await message.answer(text='Код должен содержать 6 цифры')
         return
-    password_object = message.text
+    password_object = f'{message.text}#'
     await rq.set_object_all(password=password_object)
     await message.answer(text=f'Код обновлен на {message.text}')
     await state.set_state(state=None)
