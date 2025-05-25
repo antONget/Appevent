@@ -46,9 +46,16 @@ async def scheduler_remember(bot: Bot):
             if delta_time.days < 0:
                 try:
                     await bot.send_message(chat_id=order.tg_id,
-                                           text=f'Доброго времени суток!\n'
-                                                f'Вы забронировали {order.title_object}.\n'
-                                                f'Дата и время брони: {order.date_order} {order.month_order} {order.time_order}.')
+                                           text=f'Привет!\n'
+                                                f'Напоминаем, что ты забронировал(а):\n'
+                                                f'Зал: {order.title_object}.\n'
+                                                f'Дата {order.date_order} {order.month_order}\n'
+                                                f'Время начала:{order.time_order}\n'
+                                                f'Время конца: {int(order.time_order.split(":")[0]) + order.long_order}'
+                                                f':{order.time_order.split(":")[1]}\n\n'
+                                                f'Не забудь получить код-доступа и отправить'
+                                                f' его клиентам вместе с памяткой!\n'
+                                                f'Ждем тебя🤩')
                     await rq.set_order_feedback(id_order=order.id)
                 except:
                     pass
