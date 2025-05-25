@@ -206,8 +206,7 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
                                           f"Ты забронировал(-а): {title_object}\n"
                                           f"Дата брони: {order.date_order} {order.month_order}\n"
                                           f"Время начала брони: {order.time_order}\n"
-                                          f"Время конца брони: {order.finish_date_order.split()[-1]}"
-                                          f":{order.time_order.split(':')[1]}\n\n"
+                                          f"Время конца брони: {order.finish_date_order.split()[-1]}\n\n"
                                           f"📌Код доступа на объект:  {object_order.password_object}\n"
                                           f"🎾Нажми на 'Инструкции' и узнай как пользоваться залом!")
                 # await message.answer_video(video=object_order.video_object,
