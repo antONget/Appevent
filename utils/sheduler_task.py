@@ -51,8 +51,7 @@ async def scheduler_remember(bot: Bot):
                                                 f'Зал: {order.title_object}.\n'
                                                 f'Дата {order.date_order} {order.month_order}\n'
                                                 f'Время начала:{order.time_order}\n'
-                                                f'Время конца: {int(order.time_order.split(":")[0]) + int(order.long_order)}'
-                                                f':{order.time_order.split(":")[1]}\n\n'
+                                                f'Время конца: {order.finish_date_order.split()[-1]}\n\n'
                                                 f'<b>Не забудь получить код-доступа и отправить'
                                                 f' его клиентам вместе с памяткой!</b>\n'
                                                 f'Ждем тебя🤩')

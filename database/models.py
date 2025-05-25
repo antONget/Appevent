@@ -31,6 +31,7 @@ class Order(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     number_order: Mapped[int] = mapped_column(Integer)
     date_order: Mapped[str] = mapped_column(String(200))
+    finish_date_order: Mapped[str] = mapped_column(String(200))
     month_order: Mapped[str] = mapped_column(String(200))
     time_order: Mapped[str] = mapped_column(String(20))
     long_order: Mapped[str] = mapped_column(String(200))

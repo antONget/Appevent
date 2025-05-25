@@ -65,6 +65,9 @@ async def my_handler(client: Client, message: Message):
             elif "Email:" in row:
                 email_client = row.split()[1].replace('.', '')
                 data["email_client"] = email_client
+            elif "Закончится:" in row:
+                finish_date_order = row.split(maxsplit=1)[1]
+                data["finish_date_order"] = finish_date_order
             # data = {"number_order": number_order,
             #         "date_order": date_order,
             #         "month_order": month_order,
