@@ -42,7 +42,7 @@ async def scheduler_remember(bot: Bot):
     current_date = datetime.now().strftime(date_format)
     for order in orders:
         if order.feedback == 'create':
-            delta_time = (datetime.strptime(current_date, date_format) - datetime.strptime(order.datetime_order, date_format))
+            delta_time = (datetime.strptime(order.datetime_order, date_format) - datetime.strptime(current_date, date_format))
             if delta_time.days < 0:
                 try:
                     await bot.send_message(chat_id=order.tg_id,
