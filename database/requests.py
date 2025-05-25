@@ -66,7 +66,7 @@ async def add_order(data: dict) -> None:
         await session.commit()
 
 
-async def get_order_number(number_order: int) -> Order:
+async def get_order_number(number_order: int) -> Order | None:
     """
     Возвращаем запись о заказе по его номеру
     :param number_order:
@@ -75,6 +75,21 @@ async def get_order_number(number_order: int) -> Order:
     logging.info(f'get_order_number')
     async with async_session() as session:
         return await session.scalar(select(Order).filter(Order.number_order == number_order))
+
+
+async def get_order_phone_number(phone_number: str) -> list[Order] | None:
+    """
+    Возвращаем запись о заказе по его номеру
+    :param phone_number:
+    :return:
+    """
+    logging.info(f'get_order_number')
+    async with async_session() as session:
+        orders = await session.scalars(select(Order).filter(Order.phone_client == phone_number))
+        if orders:
+            return [order for order in orders]
+        else:
+            return None
 
 
 async def get_orders() -> Order:

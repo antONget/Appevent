@@ -6,6 +6,7 @@ from aiogram.fsm.state import State, StatesGroup
 
 from config_data.config import Config, load_config
 import database.requests as rq
+from database.models import Order
 import keyboards.keyboard_user as kb
 from utils.admin_utils import send_admins
 
@@ -176,7 +177,7 @@ async def process_get_password(message: Message, state: FSMContext):
     """
     logging.info(f"process_get_password {message.chat.id}")
     await state.set_state(state=None)
-    await message.answer(text="""📲 Для получения кода доступа, пришли номер своего телефона.""")
+    await message.answer(text="""📲 Для получения кода доступа, пришли номер своего телефона в формате "79000000000".""")
     await state.set_state(User.number_order)
 
 
@@ -195,36 +196,37 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
     #     await message.answer(text='Номер заказа должно быть числом')
     #     return
 
-    order = await rq.get_order_number(number_order=int(number_order))
-    if order:
-        title_object = order.title_object
-        object_order = await rq.get_object_title(title=title_object)
-        if object_order:
-            await message.answer(text=f"Привет, {order.name_client} Рады знакомству! 😉\n\n"
-                                      f"Ты забронировал(-а): {title_object}\n"
-                                      f"Дата брони: {order.date_order} {order.month_order}\n"
-                                      f"Время начала брони: {order.time_order}\n"
-                                      f"Время конца брони: {order.time_order}\n\n"
-                                      f"📌Код доступа на объект:  {object_order.password_object}\n"
-                                      f"🎾Нажми на 'Инструкции' и узнай как пользоваться залом!")
-            # await message.answer_video(video=object_order.video_object,
-            #                            caption='Инструкция как добраться до объекта')
-            user_info = await rq.get_user(tg_id=message.chat.id)
-            order_user = user_info.list_order.split(',')
-            order_user.append(str(order.id))
-            await rq.set_order_user(tg_id=message.chat.id, orders=','.join(order_user))
-            await rq.set_order_tg_id(tg_id=message.chat.id, id_order=order.id)
-        else:
-            await message.answer(text="""Упс, что-то пошло не так 🧐
-
-Проверь 2 вещи:
-1. Заказ оплачен? Если да, то проверь правильность номера телефона и повтори ввод!
-
-2. Заказ не оплачен? Чтобы получить код доступа необходимо оплатить заказ. Счет уже у тебя на почте😊
-
-Если ничего не получается, напиши нам: @tvoiystart_admin
-""")
-            await send_admins(bot=bot, text=f'Объект {title_object} в БД отсутствует')
+    list_orders: list[Order] = await rq.get_order_phone_number(phone_number=number_order)
+    if list_orders:
+        for order in list_orders:
+            title_object = order.title_object
+            object_order = await rq.get_object_title(title=title_object)
+            if object_order:
+                await message.answer(text=f"Привет, {order.name_client} Рады знакомству! 😉\n\n"
+                                          f"Ты забронировал(-а): {title_object}\n"
+                                          f"Дата брони: {order.date_order} {order.month_order}\n"
+                                          f"Время начала брони: {order.time_order}\n"
+                                          f"Время конца брони: {order.time_order}\n\n"
+                                          f"📌Код доступа на объект:  {object_order.password_object}\n"
+                                          f"🎾Нажми на 'Инструкции' и узнай как пользоваться залом!")
+                # await message.answer_video(video=object_order.video_object,
+                #                            caption='Инструкция как добраться до объекта')
+                user_info = await rq.get_user(tg_id=message.chat.id)
+                order_user = user_info.list_order.split(',')
+                order_user.append(str(order.id))
+                await rq.set_order_user(tg_id=message.chat.id, orders=','.join(order_user))
+                await rq.set_order_tg_id(tg_id=message.chat.id, id_order=order.id)
+            else:
+                await message.answer(text="""Упс, что-то пошло не так 🧐
+    
+    Проверь 2 вещи:
+    1. Заказ оплачен? Если да, то проверь правильность номера телефона и повтори ввод!
+    
+    2. Заказ не оплачен? Чтобы получить код доступа необходимо оплатить заказ. Счет уже у тебя на почте😊
+    
+    Если ничего не получается, напиши нам: @tvoiystart_admin
+    """)
+                await send_admins(bot=bot, text=f'Объект {title_object} в БД отсутствует')
         await state.set_state(state=None)
     else:
         await message.answer(text="""Упс, что-то пошло не так 🧐

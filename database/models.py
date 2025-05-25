@@ -2,10 +2,10 @@ from sqlalchemy import String, Integer, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 from dataclasses import dataclass
-USER_DB='mynewuser'
-PASSWORD_DB='mypassword'
-PORT_DB=5432
-HOST_DB="77.222.53.144"
+USER_DB = 'mynewuser'
+PASSWORD_DB = 'mypassword'
+PORT_DB = 5432
+HOST_DB = "77.222.53.144"
 postgresql_url = f'postgresql+asyncpg://{USER_DB}:{PASSWORD_DB}@{HOST_DB}:{PORT_DB}/appevent'
 # engine = create_async_engine(url="sqlite+aiosqlite:///database/db.sqlite3", echo=False)
 engine = create_async_engine(url=postgresql_url)
