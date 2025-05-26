@@ -83,6 +83,7 @@ async def process_manual(message: Message, state: FSMContext):
     """
     logging.info(f"process_support {message.chat.id}")
     await state.set_state(state=None)
+    await message.answer_video(video='BAACAgIAAxkBAAIComg0LF2Fl5W15A7zvlYq4jeZyTfQAAI8agACukOgSVLdDQEuq4OSNgQ')
     await message.answer(text="""Система Твой START - это очень просто!
 
 🎾Нажимай на интересующую тебя кнопку и получишь простую инструкцию!
