@@ -54,7 +54,7 @@ async def my_handler(client: Client, message: Message):
                                                    minute=0).strftime("%d/%m/%Y %H:%M:%S")
                 data["datetime_order"] = datetime_order
             elif "Зал:" in row:
-                title_object = row.split(maxsplit=1)[-1]
+                title_object = row.split(maxsplit=1)[-1][:-1]
                 data["title_object"] = title_object
             elif "Имя:" in row:
                 name_client = ' '.join(row.split()[1:])
