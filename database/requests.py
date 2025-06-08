@@ -92,7 +92,7 @@ async def get_order_phone_number(phone_number: str) -> list[Order] | None:
             return None
 
 
-async def get_orders() -> Order:
+async def get_orders() -> list[Order] | None:
     """
     Возвращаем записи о заказах
     :return:
@@ -190,7 +190,8 @@ async def set_object_all(password: str) -> None:
     """
     logging.info(f'get_object_title')
     async with async_session() as session:
-        object_ = await session.scalar(select(Object))
+        object_ = await session.scalars(select(Object))
         if object_:
-            object_.password_object = password
+            for item in object_:
+                item.password_object = password
             await session.commit()

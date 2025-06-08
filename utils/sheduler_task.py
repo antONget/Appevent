@@ -3,7 +3,8 @@ import logging
 from aiogram import Bot
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database import requests as rq
-from datetime import datetime, date
+from database.models import Order
+from datetime import datetime, timedelta
 import asyncio
 
 
@@ -17,8 +18,10 @@ async def scheduler_feedback(bot: Bot):
     date_format = '%d/%m/%Y %H:%M:%S'
     current_date = datetime.now().strftime(date_format)
     for order in orders:
-        if order.feedback == 'create':
-            delta_time = (datetime.strptime(current_date, date_format) - datetime.strptime(order.datetime_order, date_format))
+        if order.feedback == 'remember':
+            delta_time = (datetime.strptime(current_date, date_format) -
+                          datetime.strptime(order.datetime_order, date_format) + timedelta(days=1))
+            # если время заказа прошло
             if delta_time.days > 0:
                 try:
                     button_1 = InlineKeyboardButton(text='Оставить отзыв', callback_data=f'leave_feedback')
@@ -36,13 +39,15 @@ async def scheduler_remember(bot: Bot):
     Планировщик задач для оставления отзыва через сутки после посещения зала
     :return:
     """
-    logging.info(f'scheduler_feedback')
-    orders = await rq.get_orders()
+    logging.info(f'scheduler_remember')
+    orders: list[Order] = await rq.get_orders()
     date_format = '%d/%m/%Y %H:%M:%S'
     current_date = datetime.now().strftime(date_format)
     for order in orders:
         if order.feedback == 'create':
-            delta_time = (datetime.strptime(order.datetime_order, date_format) - datetime.strptime(current_date, date_format))
+            delta_time = (datetime.strptime(order.datetime_order, date_format) -
+                          datetime.strptime(current_date, date_format) - timedelta(hours=2))
+            # если время заказа не наступило
             if delta_time.days < 0:
                 try:
                     await bot.send_message(chat_id=order.tg_id,
