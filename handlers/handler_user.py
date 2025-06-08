@@ -13,7 +13,7 @@ from utils.admin_utils import send_admins
 import logging
 import asyncio
 import random
-
+from datetime import datetime, timedelta
 router = Router()
 config: Config = load_config()
 
@@ -198,8 +198,17 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
     #     return
 
     list_orders: list[Order] = await rq.get_order_phone_number(phone_number=number_order)
+    date_format = '%d/%m/%Y %H:%M:%S'
+    current_date = datetime.now().strftime(date_format)
     if list_orders:
+        check_order = True
         for order in list_orders:
+            delta_time = (datetime.strptime(current_date, date_format) -
+                          datetime.strptime(order.datetime_order, date_format))
+            if delta_time.microseconds < 0:
+                check_order = False
+            else:
+                continue
             title_object = order.title_object
             object_order = await rq.get_object_title(title=title_object)
             if object_order:
@@ -228,6 +237,8 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
     Если ничего не получается, напиши нам: @tvoiystart_admin
     """)
                 await send_admins(bot=bot, text=f'Объект {title_object} в БД отсутствует')
+        if check_order:
+            await message.answer(text='По вашим данным открытых броней не найдено')
         await state.set_state(state=None)
     else:
         await message.answer(text="""Упс, что-то пошло не так 🧐
