@@ -27,9 +27,19 @@ async def scheduler_feedback(bot: Bot):
                     button_1 = InlineKeyboardButton(text='Оставить отзыв', callback_data=f'leave_feedback')
                     keyboard = InlineKeyboardMarkup(inline_keyboard=[[button_1]], )
                     await bot.send_message(chat_id=order.tg_id,
-                                           text='Пришлите отзыв',
+                                           text='Привет!\n'
+                                                'Тебе у нас понравилось?😻\n\n'
+                                                'Пожалуйста, оставь отзыв! А мы дадим тебе промокод на 20%'
+                                                ' на следующее занятие 😎\n\n'
+                                                'Наши социальные сети:\n'
+                                                '📱<a href="https://yandex.ru/maps/-/CHfYVZNS">Яндекс.Карты</a>\n'
+                                                '📍<a href="">2ГИС</a>\n'
+                                                '📱Google.Карты\n'
+                                                '📱<a href="https://www.instagram.com/tvoiystart">Instagram</a>\n'
+                                                '📱<a href="https://vk.com/tvoiystart">VK</a>\n'
+                                                '📱<a href="https://t.me/tvoiystart">Telegram</a>',
                                            reply_markup=keyboard)
-                    await rq.set_order_feedback(id_order=order.id)
+                    await rq.set_order_feedback(id_order=order.id, feedback='feedback')
                 except:
                     pass
 
@@ -60,7 +70,7 @@ async def scheduler_remember(bot: Bot):
                                                 f'<b>Не забудь получить код-доступа и отправить'
                                                 f' его клиентам вместе с памяткой!</b>\n'
                                                 f'Ждем тебя🤩')
-                    await rq.set_order_feedback(id_order=order.id)
+                    await rq.set_order_feedback(id_order=order.id, feedback='remember')
                 except:
                     pass
 

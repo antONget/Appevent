@@ -117,18 +117,18 @@ async def set_order_tg_id(tg_id: int, id_order: int) -> None:
             await session.commit()
 
 
-async def set_order_feedback(id_order: int) -> None:
+async def set_order_feedback(id_order: int, feedback: str) -> None:
     """
     Возвращаем запись об объекте по его id
-    :param tg_id:
     :param id_order:
+    :param feedback:
     :return:
     """
     logging.info(f'set_order_feedback')
     async with async_session() as session:
         order = await session.scalar(select(Order).where(Order.id == id_order))
         if order:
-            order.feedback = 'remember'
+            order.feedback = feedback
             await session.commit()
 
 
