@@ -201,13 +201,14 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
     date_format = '%d/%m/%Y %H:%M:%S'
     current_date = datetime.now().strftime(date_format)
     if list_orders:
-        check_order = False
+        check_order = True
         for order in list_orders:
             delta_time = (datetime.strptime(current_date, date_format) -
                           datetime.strptime(order.datetime_order, date_format))
-            print(order.id, delta_time.seconds)
-            if delta_time.microseconds < 0:
-                check_order = True
+            check_order_ = (datetime.strptime(current_date, date_format) < datetime.strptime(order.datetime_order, date_format))
+            if check_order_:
+                check_order = False
+            else:
                 continue
             title_object = order.title_object
             object_order = await rq.get_object_title(title=title_object)
