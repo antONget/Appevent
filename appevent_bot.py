@@ -47,7 +47,7 @@ async def main():
     dp.include_router(handler_user.router)
     dp.include_router(handler_admin.router)
     dp.include_router(other_handlers.router)
-    dp.message.middleware(FirstOuterMiddleware())
+    # dp.message.middleware(FirstOuterMiddleware())
 
     @dp.error()
     async def error_handler(event: ErrorEvent):

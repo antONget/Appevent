@@ -1,6 +1,6 @@
 import asyncio
 
-from aiogram import Router
+from aiogram import Router, Bot, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.types import FSInputFile
 from database import requests as rq
@@ -20,8 +20,8 @@ async def all_callback(callback: CallbackQuery) -> None:
     await callback.answer()
 
 
-@router.message()
-async def all_message(message: Message) -> None:
+@router.message(F.text)
+async def all_message(message: Message, bot: Bot) -> None:
     logging.info(f'all_message {message.chat.id} / {message.text}')
     if message.photo:
         logging.info(f'all_message message.photo')
@@ -73,7 +73,7 @@ async def all_message(message: Message) -> None:
         count_order = len([order for order in orders])
         await message.answer(text=f'Количество заявок - {count_order}')
 
-    elif message.from_user.id == 4930800055:
+    elif message.chat.id == -1002503953563:
         content = message.text.split('\n')
         if not content[0] == 'Поступила оплата!':
             return
@@ -83,10 +83,12 @@ async def all_message(message: Message) -> None:
                 number_order = int(row.split('№')[-1])
                 result = await get_order_number(number_order=number_order)
                 if result:
-                    await message.answer(text=f'Заказ №{number_order} уже размещен в базе данных')
+                    await bot.send_message(chat_id=-1002503953563,
+                                           text=f'Заказ №{number_order} уже размещен в базе данных')
                     return
                 else:
-                    await message.answer(text=f'Заказ №{number_order} в БД не найден. Производим его размещение')
+                    await bot.send_message(chat_id=-1002503953563,
+                                           text=f'Заказ №{number_order} в БД не найден. Производим его размещение')
                 data["number_order"] = number_order
             elif "Начнется:" in row:
                 dict_month = {'января': '01', 'февраля': '02', 'марта': '03',

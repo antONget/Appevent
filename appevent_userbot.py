@@ -24,7 +24,7 @@ async def my_handler(client: Client, message: Message):
     await async_main()
     logging.info(message.chat.id)
     if message.chat.id == 191328935:
-        await client.send_message(chat_id=4930800055,
+        await client.send_message(chat_id=-1002503953563,
                                   text=message.text)
         content = message.text.split('\n')
         if not content[0] == 'Поступила оплата!':
