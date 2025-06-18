@@ -61,9 +61,11 @@ async def add_order(data: dict) -> None:
     """
     logging.info(f'add_order')
     async with async_session() as session:
-        order = Order(**data)
-        session.add(order)
-        await session.commit()
+        order = await session.scalar(select(Order).filter(Order.number_order == data.get("number_order")))
+        if not order:
+            order = Order(**data)
+            session.add(order)
+            await session.commit()
 
 
 async def get_order_number(number_order: int) -> Order | None:
