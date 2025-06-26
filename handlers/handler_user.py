@@ -185,7 +185,7 @@ async def process_get_password(message: Message, state: FSMContext):
 @router.message(F.text, StateFilter(User.number_order))
 async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> None:
     """
-    Получаем от пользователя номер заказа
+    Получаем от пользователя номер телефона
     :param message:
     :param state:
     :param bot:
@@ -196,22 +196,29 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
     # if not number_order.isdigit():
     #     await message.answer(text='Номер заказа должно быть числом')
     #     return
-
+    # получаем список заказов по введеному номеру телефона
     list_orders: list[Order] = await rq.get_order_phone_number(phone_number=number_order)
+    # определяем формат даты
     date_format = '%d/%m/%Y %H:%M:%S'
+    # формируем текущую дату
     current_date = datetime.now().strftime(date_format)
+    # если по номеру телефона есть заказы
     if list_orders:
+        # флаг, что проверка пройдена
         check_order = True
+        # проходимся по всем полученным заказам
         for order in list_orders:
             delta_time = (datetime.strptime(current_date, date_format) -
                           datetime.strptime(order.datetime_order, date_format))
+            # если текущая дата меньше даты заказа
             check_order_ = (datetime.strptime(current_date, date_format) < datetime.strptime(order.datetime_order, date_format))
             if check_order_:
                 check_order = False
             else:
                 continue
             title_object = order.title_object
-            object_order = await rq.get_object_title(title=title_object)
+            # object_order = await rq.get_object_title(title=title_object)
+            object_order = await rq.get_object_id(id_=1)
             if object_order:
                 await message.answer(text=f"Привет, {order.name_client} Рады знакомству! 😉\n\n"
                                           f"Ты забронировал(-а): {title_object}\n"
