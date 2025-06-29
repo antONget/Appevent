@@ -211,7 +211,8 @@ async def get_number_order(message: Message, state: FSMContext, bot: Bot) -> Non
             delta_time = (datetime.strptime(current_date, date_format) -
                           datetime.strptime(order.datetime_order, date_format))
             # если текущая дата меньше даты заказа
-            check_order_ = (datetime.strptime(current_date, date_format) < datetime.strptime(order.datetime_order, date_format))
+            check_order_ = (datetime.strptime(current_date, date_format) < (datetime.strptime(order.datetime_order, date_format) + timedelta(minutes=30)))
+            print(current_date, order.datetime_order, check_order_)
             if check_order_:
                 check_order = False
             else:
